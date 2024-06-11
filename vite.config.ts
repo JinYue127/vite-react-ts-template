@@ -1,9 +1,10 @@
-import {defineConfig} from 'vite'
+import { Agent } from 'node:http'
+import * as path from 'node:path'
+
 import react from '@vitejs/plugin-react'
-import {Agent} from 'node:http';
-import * as path from "node:path";
+import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
-import visualizer from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -12,12 +13,12 @@ export default defineConfig({
       ...viteCompression(),
       apply: 'build',
     },
-    visualizer({open: true}),
+    visualizer({ open: true }),
   ],
   resolve: {
     alias: {
-      "@": path.resolve("./src"),
-    }
+      '@': path.resolve('./src'),
+    },
   },
   server: {
     open: true,
@@ -25,10 +26,10 @@ export default defineConfig({
     port: 3001,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',// todo
+        target: 'http://localhost:3000', // todo
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
-        agent: new Agent({keepAlive: true, keepAliveMsecs: 20000}),
+        agent: new Agent({ keepAlive: true, keepAliveMsecs: 20000 }),
       },
     },
   },
@@ -39,9 +40,9 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom'],
           antd: ['antd'],
         },
-        chunkFileNames: "static/js/[name]-[hash].js",
-        entryFileNames: "static/js/[name]-[hash].js",
-        assetFileNames: "static/[ext]/[name]-[hash].[ext]",
+        chunkFileNames: 'static/js/[name]-[hash].js',
+        entryFileNames: 'static/js/[name]-[hash].js',
+        assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
       },
     },
   },
