@@ -88,5 +88,5 @@ VITE_BASE_URL=/api
 ### Start the app
 
 ```shell
-npm run dev
+pnpm run dev
 ```
