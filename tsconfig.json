@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "types": [
-      "vite/client"
+      "vite/client",
+      "node"
     ],
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "#/*": [
+        "types/*"
       ]
     },
     "target": "ES2020",
@@ -28,11 +32,16 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
+    // 有未使用的变量时，抛出错误
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
   ],
   "references": [
     {

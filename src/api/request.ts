@@ -4,7 +4,9 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 import loading from '@/assets/gif/newLoading.gif'
 
 let requestCount = 0
-
+// 生成环境所用的接口
+const prefixUrl = import.meta.env.VITE_BASE_URL as string
+const baseURL = process.env.NODE_ENV !== 'development' ? prefixUrl : '/api'
 const showLoading = () => {
   const dom = document.createElement('div')
   dom.setAttribute('id', '__loading')
@@ -25,7 +27,7 @@ const removeLoading = () => {
 // 创建新的axios实例
 const service = axios.create({
   // 公共接口
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: baseURL,
   // 超时时间 单位是ms，这里设置了5s的超时时间
   timeout: 5000,
 })
@@ -69,9 +71,8 @@ service.interceptors.response.use(
       if (data.code === 0) {
         // 接口请求结果正确
         return data
-      } else {
-        return Promise.reject(data)
       }
+      return Promise.reject(data)
     }
   },
   (error: AxiosError) => {
