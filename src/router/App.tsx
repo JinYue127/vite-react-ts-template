@@ -9,10 +9,11 @@ import NotFound from '@/pages/404'
 import Login from '@/pages/login'
 
 type PageFiles = Record<string, () => Promise<DefaultComponent<unknown>>>
+
 const pages = import.meta.glob('../pages/**/*.tsx') as PageFiles
-console.log(pages, 'pages')
+
 const layouts = handleRoutes(pages)
-console.log(layouts, 'layouts')
+
 const newRoutes: RouteObject[] = [
   {
     path: 'login',
@@ -28,7 +29,6 @@ const newRoutes: RouteObject[] = [
     element: <NotFound />,
   },
 ]
-console.log(newRoutes, 'newRoutes')
 
 function App() {
   return <>{useRoutes(newRoutes)}</>

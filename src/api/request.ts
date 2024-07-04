@@ -1,12 +1,17 @@
 import { message } from 'antd'
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
+import { TOKEN } from '@/utils/config.ts'
+import { getLocalInfo, removeLocalInfo } from '@/utils/local.ts'
+
 import loading from '@/assets/gif/newLoading.gif'
 
 let requestCount = 0
 // 生成环境所用的接口
 const prefixUrl = import.meta.env.VITE_BASE_URL as string
+
 const baseURL = process.env.NODE_ENV !== 'development' ? prefixUrl : '/api'
+
 const showLoading = () => {
   const dom = document.createElement('div')
   dom.setAttribute('id', '__loading')
@@ -41,7 +46,7 @@ service.interceptors.request.use(
     }
     requestCount++
 
-    const token = '' // todo
+    const token = getLocalInfo(TOKEN) || ''
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -65,23 +70,40 @@ service.interceptors.response.use(
     if (requestCount === 0) {
       removeLoading()
     }
+
     const { status, data } = response
 
     if (status === 200) {
-      if (data.code === 0) {
+      if (data.code === 200) {
         // 接口请求结果正确
         return data
+      }
+      // 权限不足
+      if (data?.code === 401) {
+        message.error('权限不足，请重新登录！')
+        removeLocalInfo(TOKEN)
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 1000)
+        handleError(data?.message)
       }
       return Promise.reject(data)
     }
   },
   (error: AxiosError) => {
     // 提示错误信息
-    message.error({ content: '网络异常' })
+    handleError('网络异常')
     requestCount = 0
     removeLoading()
     return Promise.reject(error)
   },
 )
 
+const handleError = (error: string, content?: string) => {
+  console.error('错误信息:', error)
+  message.error({
+    content: content || error || '服务器错误',
+    key: 'error',
+  })
+}
 export default service
