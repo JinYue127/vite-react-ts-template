@@ -6,7 +6,6 @@ function Layout() {
   return (
     <div id="layout">
       <div id="layoutContent">{outlet}</div>
-      <div id="layoutContent">{outlet}</div>
     </div>
   )
 }
